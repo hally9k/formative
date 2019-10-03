@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import get from 'lodash/get';
 
-export function createSelectors<T>(state: T) {
+export function createSelectors<S>(state: S) {
   const getFormState = () => get(state, `form`, null);
 
   const getForm = createSelector(
@@ -45,6 +45,6 @@ export function createSelectors<T>(state: T) {
     getValidation,
     getTouched,
     getErrors,
-    getIsSubmitted
+    getIsSubmitted,
   };
 }

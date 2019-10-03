@@ -1,4 +1,49 @@
-export function createFormHooks(state, dispatchers, schema) {
+import { SyntheticEvent } from 'react';
+import { createSelectors } from './selectors';
+import { Dispatchers, Errors, Touched, Validation } from './actions';
+import { FormState } from './reducer';
+import { Schema } from 'yup';
+
+interface FormHooks<F> {
+  useClearForm: () => () => void;
+  useErrors: () => Errors<F>;
+  useFieldError: () => (fieldName: keyof F) => string | null;
+  useFormState: () => F;
+  useControlHandlerProps: () => {
+    onBlur: (event: SyntheticEvent<any>) => void;
+    onFocus: (event: SyntheticEvent<any>) => void;
+    onClick: (event: SyntheticEvent<any>) => void;
+  };
+  useInputHandlerProps: () => {
+    onBlur: (event: SyntheticEvent<any>) => void;
+    onFocus: (event: SyntheticEvent<any>) => void;
+    onChange: (event: SyntheticEvent<any>) => void;
+  };
+  useHandleSubmit: (callback: (event: SyntheticEvent<any>) => void) => (event: SyntheticEvent<any>) => void;
+  useIsErrored: () => (fieldName: keyof F) => boolean;
+  useIsValid: () => boolean;
+  useResetErrors: () => () => void;
+  useSetFieldValue: () => (fieldName: keyof F, value: any) => void;
+  useValidation: () => Validation<F>;
+  useOnChange: () => (event: SyntheticEvent<any>) => void;
+  useOnClick: () => (event: SyntheticEvent<any>) => void;
+  useOnBlur: () => (event: SyntheticEvent<any>) => void;
+  useOnFocus: () => (event: SyntheticEvent<any>) => void;
+  useTouched: () => Touched<F>;
+  useIsSubmitted: () => boolean;
+  useUpdateIsSubmitted: () => (payload: boolean) => void ;
+  useUpdateValidation: () => [
+    updateValidation: () => void,
+    resetFieldValidation: () => void,
+    resetFormValidation: () => void
+  ];
+}
+
+export function createFormHooks<F>(
+  state: FormState<F>,
+  dispatchers: Dispatchers<F>,
+  schema: Schema<F>
+) {
   const {
     getForm,
     getIsValid,
@@ -17,19 +62,15 @@ export function createFormHooks(state, dispatchers, schema) {
     formSubmitted,
     formCleared,
     formValidationReset,
-  } = actionCreators;
-
-  const [state, dispatch] = useReducer();
+  } = dispatchers;
 
   // State Hooks
   function useFormState() {
-    return useSelector(getForm);
+    return getForm(state);
   }
 
   function useUpdateFormState() {
-    const dispatch = useDispatch();
-
-    return payload => dispatch(formUpdated(payload));
+    return (payload: Partial<F>) => formUpdated(payload);
   }
 
   function useValidation() {
@@ -123,12 +164,12 @@ export function createFormHooks(state, dispatchers, schema) {
       );
   }
 
-  function useFieldError() {
+  function useFieldError<F>() {
     const isErrored = useIsErrored();
     const errors = useSelector(getErrors);
     const validation = useSelector(getValidation);
 
-    return fieldName => {
+    return (fieldName: keyof F) => {
       const isErr = isErrored(fieldName);
 
       if (isErr) {
@@ -142,7 +183,7 @@ export function createFormHooks(state, dispatchers, schema) {
     };
   }
 
-  function useIsValid() {
+  function useIsValid()  => boolean{
     return useSelector(getIsValid);
   }
 

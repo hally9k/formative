@@ -1,26 +1,43 @@
 import { useEffect, useState, useReducer } from 'react';
 import { Schema } from 'yup';
+import zipObject from 'lodash/zipObject';
 
-export { createFormReducer } from './reducer';
-export { createDispatchers } from './actions';
-export { createFormHooks } from './hooks';
-export { createSelectors } from './selectors';
+import { createFormReducer, FormState } from './reducer';
+import { createDispatchers, Errors, Touched, Validation } from './actions';
+import { createFormHooks } from './hooks';
 
-export function useForm<T>(defaultState: T, schema: Schema<T>) {
-  const [hooks, updateHooks] = useState(null);
+function createInitialState<F>(form: F) {
+  const formKeys = Object.keys(form);
 
-  const dispatchers = createDispatchers();
+  return {
+    form,
+    errors: zipObject(formKeys, formKeys.map(() => null)) as Errors<F>,
+    isValid: true,
+    isSubmitted: false,
+    touched: zipObject(formKeys, formKeys.map(() => false)) as Touched<F>,
+    validation: zipObject(formKeys, formKeys.map(() => null)) as Validation<F>,
+  };
+}
 
-  const [state, dispatch] = useReducer(
-    createFormReducer(dispatchers, defaultState, schema),
-    defaultState
+export function useForm<F>(form: F, schema: Schema<F>) {
+  const [hooks, updateHooks] = useState<FormHooks | null>(null);
+  const [initialState, updateInitialState] = useState<FormState<F>>(
+    createInitialState<F>(form)
   );
 
-  const selectors = createSelectors(state);
-  const actionCreators = createFormActionCreators(actions, dispatch);
+  useEffect(() => {
+    updateInitialState(createInitialState(form));
+  }, [form]);
+
+  const [state, dispatch] = useReducer(
+    createFormReducer<F>(form, schema),
+    initialState
+  );
+
+  const dispatchers = createDispatchers<F>(dispatch);
 
   useEffect(() => {
-    updateHooks(createFormHooks());
+    updateHooks(createFormHooks(state, dispatchers, schema));
   }, [state]);
 
   return hooks;

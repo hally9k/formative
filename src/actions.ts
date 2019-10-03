@@ -1,4 +1,4 @@
-export type Dispatch<A> = (action: A) => A;
+import { Dispatch } from 'react';
 
 export type Action<T, P = null> = {
   type: T;
@@ -65,22 +65,20 @@ export type ActionUnion<F> =
   | FormErrorsResetAction
   | FormSubmittedAction;
 
-type FormUpdatedDispatcher<F> = (payload: F) => FormUpdatedAction<F>;
-type FormClearedDispatcher = () => FormClearedAction;
-type FormTouchedDispatcher<F> = (payload: Touched<F>) => FormTouchedAction<F>;
-type FormValidatedDispatcher<F> = (
-  payload: Validation<F>
-) => FormValidatedAction<F>;
-type FormValidationFailedDispatcher = () => FormValidationFailedAction;
-type FormValidationResetDispatcher = () => FormValidationResetAction;
+type FormUpdatedDispatcher<F> = (payload: Partial<F>) => void;
+type FormClearedDispatcher = () => void;
+type FormTouchedDispatcher<F> = (payload: Touched<F>) => void;
+type FormValidatedDispatcher<F> = (payload: Validation<F>) => void;
+type FormValidationFailedDispatcher = () => void;
+type FormValidationResetDispatcher = () => void;
 type FormFieldValidationResetDispatcher<F> = (
   payload: FieldValidationResetPayload<F>
-) => FormFieldValidationResetAction<F>;
-type FormErroredDispatcher<F> = (payload: Errors<F>) => FormErroredAction<F>;
-type FormErrorsResetDispatcher = () => FormErrorsResetAction;
-type FormSubmittedDispatcher = () => FormSubmittedAction;
+) => void;
+type FormErroredDispatcher<F> = (payload: Errors<F>) => void;
+type FormErrorsResetDispatcher = () => void;
+type FormSubmittedDispatcher = () => void;
 
-interface Dispatchers<F> {
+export interface Dispatchers<F> {
   formUpdated: FormUpdatedDispatcher<F>;
   formCleared: FormClearedDispatcher;
   formTouched: FormTouchedDispatcher<F>;
@@ -94,9 +92,9 @@ interface Dispatchers<F> {
 }
 
 export function createFormUpdatedDispatcher<F>(
-  dispatch: Dispatch<FormUpdatedAction<F>>
+  dispatch: Dispatch<FormUpdatedAction<Partial<F>>>
 ) {
-  return (payload: F) =>
+  return (payload: Partial<F>) =>
     dispatch({
       type: FormAction.FORM_UPDATED,
       payload,
@@ -194,7 +192,7 @@ export function createFormSubmittedDispatcher(
 }
 
 export function createDispatchers<F>(
-  dispatch: Dispatch<Action<any, any>>
+  dispatch: Dispatch<Action<any, any>> // Dispatch<Action<any, any>>
 ): Dispatchers<F> {
   return {
     formUpdated: createFormUpdatedDispatcher<F>(dispatch),
