@@ -32,7 +32,6 @@
     "@types/yup": "^0.26.24",
     "lodash": "^4.17.15",
     "redux": "^4.0.4",
-    "reselect": "^4.0.0",
     "tslib": "^1.10.0",
     "typescript": "^3.6.3"
   },

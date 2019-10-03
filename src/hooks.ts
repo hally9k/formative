@@ -1,42 +1,55 @@
 import { SyntheticEvent } from 'react';
-import { createSelectors } from './selectors';
-import { Dispatchers, Errors, Touched, Validation } from './actions';
+import {
+  Dispatchers,
+  Errors,
+  Touched,
+  Validation,
+  FieldValidationResetPayload,
+} from './actions';
 import { FormState } from './reducer';
 import { Schema } from 'yup';
 
-interface FormHooks<F> {
-  useClearForm: () => () => void;
-  useErrors: () => Errors<F>;
-  useFieldError: () => (fieldName: keyof F) => string | null;
-  useFormState: () => F;
-  useControlHandlerProps: () => {
-    onBlur: (event: SyntheticEvent<any>) => void;
-    onFocus: (event: SyntheticEvent<any>) => void;
-    onClick: (event: SyntheticEvent<any>) => void;
-  };
-  useInputHandlerProps: () => {
-    onBlur: (event: SyntheticEvent<any>) => void;
-    onFocus: (event: SyntheticEvent<any>) => void;
-    onChange: (event: SyntheticEvent<any>) => void;
-  };
-  useHandleSubmit: (callback: (event: SyntheticEvent<any>) => void) => (event: SyntheticEvent<any>) => void;
-  useIsErrored: () => (fieldName: keyof F) => boolean;
-  useIsValid: () => boolean;
-  useResetErrors: () => () => void;
-  useSetFieldValue: () => (fieldName: keyof F, value: any) => void;
-  useValidation: () => Validation<F>;
-  useOnChange: () => (event: SyntheticEvent<any>) => void;
-  useOnClick: () => (event: SyntheticEvent<any>) => void;
-  useOnBlur: () => (event: SyntheticEvent<any>) => void;
-  useOnFocus: () => (event: SyntheticEvent<any>) => void;
-  useTouched: () => Touched<F>;
-  useIsSubmitted: () => boolean;
-  useUpdateIsSubmitted: () => (payload: boolean) => void ;
-  useUpdateValidation: () => [
-    updateValidation: () => void,
-    resetFieldValidation: () => void,
-    resetFormValidation: () => void
-  ];
+export interface FormHooks<F> {
+  // useClearForm: () => () => void;
+  // useErrors: () => Errors;
+  // useFieldError: () => (fieldName: string) => string | null;
+  // useFormState: () => F;
+  // useControlHandlerProps: () => {
+  //   onBlur: (event: SyntheticEvent<any>) => void;
+  //   onFocus: (event: SyntheticEvent<any>) => void;
+  //   onClick: (event: SyntheticEvent<any>) => void;
+  // };
+  // useInputHandlerProps: () => {
+  //   onBlur: (event: SyntheticEvent<any>) => void;
+  //   onFocus: (event: SyntheticEvent<any>) => void;
+  //   onChange: (event: SyntheticEvent<any>) => void;
+  // };
+  // inputHandlerProps: {
+  //   onBlur: (event: SyntheticEvent<any>) => void;
+  //   onFocus: (event: SyntheticEvent<any>) => void;
+  //   onChange: (event: SyntheticEvent<any>) => void;
+  // };
+  // useHandleSubmit: (
+  //   callback: (event: SyntheticEvent<any>) => void
+  // ) => (event: SyntheticEvent<any>) => void;
+  // useIsErrored: () => (fieldName: string) => boolean;
+  // isErrored: (fieldName: string) => boolean;
+  // useIsValid: () => boolean;
+  // useResetErrors: () => () => void;
+  // useSetFieldValue: () => (fieldName: string, value: any) => void;
+  // useValidation: () => Validation;
+  // useOnChange: () => (event: SyntheticEvent<any>) => void;
+  // useOnClick: () => (event: SyntheticEvent<any>) => void;
+  // useOnBlur: () => (event: SyntheticEvent<any>) => void;
+  // useOnFocus: () => (event: SyntheticEvent<any>) => void;
+  // useTouched: () => Touched;
+  // useIsSubmitted: () => boolean;
+  // useUpdateIsSubmitted: () => (payload: boolean) => void;
+  // useUpdateValidation: () => {
+  //   updateValidation: (payload: F) => void;
+  //   resetFieldValidation: (payload: FieldValidationResetPayload) => void;
+  //   resetFormValidation: () => void;
+  // };
 }
 
 export function createFormHooks<F>(
@@ -44,15 +57,6 @@ export function createFormHooks<F>(
   dispatchers: Dispatchers<F>,
   schema: Schema<F>
 ) {
-  const {
-    getForm,
-    getIsValid,
-    getValidation,
-    getTouched,
-    getErrors,
-    getIsSubmitted,
-  } = selectors;
-
   const {
     formUpdated,
     formValidated,
@@ -65,72 +69,65 @@ export function createFormHooks<F>(
   } = dispatchers;
 
   // State Hooks
-  function useFormState() {
-    return getForm(state);
-  }
+  // function useFormState() {
+  //   return state.form;
+  // }
 
-  function useUpdateFormState() {
-    return (payload: Partial<F>) => formUpdated(payload);
-  }
+  // function useUpdateFormState() {
+  //   return (payload: Partial<F>) => formUpdated(payload);
+  // }
 
-  function useValidation() {
-    return useSelector(getValidation);
-  }
+  // function useValidation() {
+  //   return state.validation;
+  // }
 
-  function useUpdateValidation() {
-    const dispatch = useDispatch();
+  // function useUpdateValidation() {
+  //   const updateValidation = (payload: F) => formValidated(payload);
+  //   const resetFieldValidation = (payload: FieldValidationResetPayload) =>
+  //     formFieldValidationReset(payload);
+  //   const resetFormValidation = () => formValidationReset();
 
-    const updateValidation = payload => dispatch(formValidated(payload));
-    const resetFieldValidation = payload =>
-      dispatch(formFieldValidationReset(payload));
-    const resetFormValidation = payload =>
-      dispatch(formValidationReset(payload));
+  //   return { updateValidation, resetFieldValidation, resetFormValidation };
+  // }
 
-    return [updateValidation, resetFieldValidation, resetFormValidation];
-  }
+  // function useTouched() {
+  //   return state.touched;
+  // }
 
-  function useTouched() {
-    return useSelector(getTouched);
-  }
+  // function useUpdateTouched() {
+  //   return (payload: Touched) => formTouched(payload);
+  // }
 
-  function useUpdateTouched() {
-    const dispatch = useDispatch();
+  // function useIsSubmitted() {
+  //   return state.isSubmitted;
+  // }
 
-    return payload => dispatch(formTouched(payload));
-  }
+  // function useUpdateIsSubmitted() {
+  //   return (payload: boolean) => formSubmitted(payload);
+  // }
 
-  function useIsSubmitted() {
-    return useSelector(getIsSubmitted);
-  }
+  // function useClearForm() {
+  //   return () => formCleared();
+  // }
 
-  function useUpdateIsSubmitted() {
-    const dispatch = useDispatch();
+  function useHandleSubmit(callback: (event: SyntheticEvent<any>) => void) {
+    // const { updateValidation } = useUpdateValidation();
+    // const form = useFormState();
+    // const resetErrors = useResetErrors();
+    // const updateIsSubmitted = useUpdateIsSubmitted();
 
-    return payload => dispatch(formSubmitted(payload));
-  }
-
-  function useClearForm() {
-    const dispatch = useDispatch();
-
-    return payload => dispatch(formCleared(payload));
-  }
-
-  function useHandleSubmit(callback) {
-    const [updateValidation] = useUpdateValidation();
-    const form = useFormState();
-    const resetErrors = useResetErrors();
-    const updateIsSubmitted = useUpdateIsSubmitted();
-
-    return event => {
+    return (event: SyntheticEvent<any>) => {
       event.preventDefault();
-      updateIsSubmitted(true);
-      updateValidation(form);
-      resetErrors();
+      formSubmitted(true);
+      formValidated(state.form);
+      formErrorsReset();
 
       let isValid = false;
 
       try {
-        isValid = Boolean(schema.validateSync(form, { abortEarly: false }));
+        isValid = Boolean(
+          schema.validateSync(state.form, { abortEarly: false })
+        );
       } catch (error) {
         //
       }
@@ -141,88 +138,99 @@ export function createFormHooks<F>(
     };
   }
 
-  function useErrors() {
-    return useSelector(getErrors);
+  // function useErrors() {
+  //   return state.errors;
+  // }
+
+  // function useResetErrors() {
+  //   return () => formErrorsReset();
+  // }
+
+  // function useIsErrored() {
+  //   return (fieldName: string) =>
+  //     Boolean(
+  //       (state.errors[fieldName] || state.validation[fieldName]) &&
+  //         (state.isSubmitted || state.touched[fieldName])
+  //     );
+  // }
+
+  function isErrored(fieldName: string) {
+    return Boolean(
+      (state.errors[fieldName] || state.validation[fieldName]) &&
+        (state.isSubmitted || state.touched[fieldName])
+    );
   }
 
-  function useResetErrors() {
-    const dispatch = useDispatch();
+  // function useFieldError() {
+  //   // const isErrored = useIsErrored();
 
-    return () => dispatch(formErrorsReset());
-  }
+  //   return (fieldName: string) => {
+  //     const isErr = isErrored(fieldName);
 
-  function useIsErrored() {
-    const errors = useSelector(getErrors);
-    const validation = useSelector(getValidation);
-    const touched = useSelector(getTouched);
-    const isSubmitted = useIsSubmitted();
+  //     if (isErr) {
+  //       const val = state.validation[fieldName];
+  //       const err = state.errors[fieldName];
 
-    return fieldName =>
-      Boolean(
-        (errors[fieldName] || validation[fieldName]) &&
-          (isSubmitted || touched[fieldName])
-      );
-  }
+  //       return val || err;
+  //     }
 
-  function useFieldError<F>() {
-    const isErrored = useIsErrored();
-    const errors = useSelector(getErrors);
-    const validation = useSelector(getValidation);
+  //     return null;
+  //   };
+  // }
 
-    return (fieldName: keyof F) => {
-      const isErr = isErrored(fieldName);
+  // function useIsValid() {
+  //   return state.isValid;
+  // }
 
-      if (isErr) {
-        const val = validation[fieldName];
-        const err = errors[fieldName];
+  // function useSetFieldValue() {
+  //   return (name: string, value: any) => {
+  //     // ! FIXME Lazy cast here:
+  //     formUpdated({ [name]: value } as Partial<F>);
+  //   };
+  // }
 
-        return val || err;
-      }
-
-      return null;
-    };
-  }
-
-  function useIsValid()  => boolean{
-    return useSelector(getIsValid);
-  }
-
-  function useSetFieldValue() {
-    const updateForm = useUpdateFormState();
-
-    return (name, value) => {
-      updateForm({ [name]: value });
-    };
+  function setFieldValue(name: string, value: any) {
+    formUpdated({ [name]: value } as Partial<F>);
   }
 
   // Handler Hooks
-  function useInputHandlerProps() {
-    return {
-      onFocus: useOnFocus(),
-      onBlur: useOnBlur(),
-      onChange: useOnChange(),
-    };
-  }
+  // function useInputHandlerProps() {
+  //   return {
+  //     onFocus: useOnFocus(),
+  //     onBlur: useOnBlur(),
+  //     onChange: useOnChange(),
+  //   };
+  // }
 
-  function useControlHandlerProps() {
-    return {
-      onFocus: useOnFocus(),
-      onBlur: useOnBlur(),
-      onClick: useOnClick(),
-    };
-  }
+  const inputHandlerProps = {
+    onFocus: useOnFocus(),
+    onBlur: useOnBlur(),
+    onChange: useOnChange(),
+  };
 
-  function useOnFocus(callback) {
-    const touched = useTouched();
-    const updateTouched = useUpdateTouched();
-    const [, resetFieldValidation] = useUpdateValidation();
+  // function useControlHandlerProps() {
+  //   return {
+  //     onFocus: useOnFocus(),
+  //     onBlur: useOnBlur(),
+  //     onClick: useOnClick(),
+  //   };
+  // }
 
-    return event => {
+  const controlHandlerProps = {
+    onFocus: useOnFocus(),
+    onBlur: useOnBlur(),
+    onChange: useOnChange(),
+  };
+
+  function useOnFocus(callback?: (event: SyntheticEvent<any>) => void) {
+    // const { resetFieldValidation } = useUpdateValidation();
+
+    return (event: SyntheticEvent<any>) => {
       const fieldName = event.currentTarget.name;
-      if (!touched[fieldName]) {
-        updateTouched({ ...touched, [fieldName]: true });
+      if (!state.touched[fieldName]) {
+        formTouched({ ...state.touched, [fieldName]: true });
       }
-      resetFieldValidation({ fieldName });
+      formFieldValidationReset({ fieldName });
 
       if (callback) {
         callback(event);
@@ -230,13 +238,13 @@ export function createFormHooks<F>(
     };
   }
 
-  function useOnBlur(callback) {
-    const form = useFormState();
-    const [updateValidation] = useUpdateValidation();
+  function useOnBlur(callback?: (event: SyntheticEvent<any>) => void) {
+    // const form = useFormState();
+    // const { updateValidation } = useUpdateValidation();
 
-    return event => {
+    return (event: SyntheticEvent<any>) => {
       const { value, name } = event.currentTarget;
-      updateValidation({ ...form, [name]: value });
+      formValidated({ ...state.form, [name]: value });
 
       if (callback) {
         callback(event);
@@ -244,13 +252,13 @@ export function createFormHooks<F>(
     };
   }
 
-  function useOnChange(callback) {
-    const form = useFormState();
-    const updateForm = useUpdateFormState();
+  function useOnChange(callback?: (event: SyntheticEvent<any>) => void) {
+    // const form = useFormState();
+    // const updateForm = useUpdateFormState();
 
-    return event => {
+    return (event: SyntheticEvent<any>) => {
       const { value, name } = event.currentTarget;
-      updateForm({ ...form, [name]: value });
+      formUpdated({ ...state.form, [name]: value });
 
       if (callback) {
         callback(event);
@@ -258,13 +266,13 @@ export function createFormHooks<F>(
     };
   }
 
-  function useOnClick(callback) {
-    const form = useFormState();
-    const updateForm = useUpdateFormState();
+  function useOnClick(callback?: (event: SyntheticEvent<any>) => void) {
+    // const form = useFormState();
+    // const updateForm = useUpdateFormState();
 
-    return event => {
+    return (event: SyntheticEvent<any>) => {
       const { value, name } = event.currentTarget;
-      updateForm({ ...form, [name]: value });
+      formUpdated({ ...state.form, [name]: value });
 
       if (callback) {
         callback(event);
@@ -273,25 +281,24 @@ export function createFormHooks<F>(
   }
 
   return {
-    useClearForm,
-    useErrors,
-    useFieldError,
-    useFormState,
-    useControlHandlerProps,
-    useInputHandlerProps,
+    ...state,
+    // Dispatcher
+    clearForm: formCleared,
+    resetFormValidation: formValidationReset,
+    validateForm: formValidated,
+    resetFieldValidation: formFieldValidationReset,
+    resetFormErrors: formErrorsReset,
+    // Handler Props
+    controlHandlerProps,
+    inputHandlerProps,
+    // Handler Hooks
     useHandleSubmit,
-    useIsErrored,
-    useIsValid,
-    useResetErrors,
-    useSetFieldValue,
-    useValidation,
     useOnChange,
     useOnClick,
     useOnBlur,
     useOnFocus,
-    useTouched,
-    useIsSubmitted,
-    useUpdateIsSubmitted,
-    useUpdateValidation,
+    // Helpers
+    isErrored,
+    setFieldValue,
   };
 }

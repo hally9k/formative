@@ -16,12 +16,12 @@ import zipObject from 'lodash/zipObject';
 import { Schema, ValidationError } from 'yup';
 
 export interface FormState<F> {
-  errors: Errors<F>;
+  errors: Errors;
   form: F;
   isValid: boolean;
   isSubmitted: boolean;
-  touched: Touched<F>;
-  validation: Validation<F>;
+  touched: Touched;
+  validation: Validation;
 }
 
 // * NOTES: Can we rewrite this typesafe? Or should these be explicit switches?
@@ -47,17 +47,17 @@ export function createFormReducer<F>(initialState: F, schema: Schema<F>) {
   const INITIAL_VALIDATION_STATE = zipObject(
     formFieldKeys,
     formFieldKeys.map(() => null)
-  ) as Validation<F>;
+  ) as Validation;
   const INITIAL_IS_VALID_STATE = false;
   const INITIAL_IS_SUBMITTED_STATE = false;
   const INITIAL_TOUCHED_STATE = zipObject(
     formFieldKeys,
     formFieldKeys.map(() => false)
-  ) as Touched<F>;
+  ) as Touched;
   const INITIAL_ERROR_STATE = zipObject(
     formFieldKeys,
     formFieldKeys.map(() => null)
-  ) as Errors<F>;
+  ) as Errors;
 
   const form = createReducer<F>(
     {
@@ -73,10 +73,10 @@ export function createFormReducer<F>(initialState: F, schema: Schema<F>) {
     INITIAL_FORM_STATE
   );
 
-  const validation = createReducer<F, Validation<F>>(
+  const validation = createReducer<F, Validation>(
     {
       [FormAction.FORM_VALIDATED]: (
-        _: Validation<F>,
+        _: Validation,
         { payload }: FormValidatedAction<F>
       ) => {
         try {
@@ -84,7 +84,7 @@ export function createFormReducer<F>(initialState: F, schema: Schema<F>) {
         } catch (error) {
           return error.inner.reduce(
             (
-              nextState: Validation<F>,
+              nextState: Validation,
               { path, type, message }: ValidationError
             ) => ({
               ...nextState,
@@ -98,8 +98,8 @@ export function createFormReducer<F>(initialState: F, schema: Schema<F>) {
       },
       [FormAction.FORM_VALIDATION_RESET]: () => INITIAL_VALIDATION_STATE,
       [FormAction.FORM_FIELD_VALIDATION_RESET]: (
-        state: Validation<F>,
-        { payload }: FormFieldValidationResetAction<F>
+        state: Validation,
+        { payload }: FormFieldValidationResetAction
       ) => ({
         ...state,
         [payload.fieldName]: null,
@@ -131,23 +131,19 @@ export function createFormReducer<F>(initialState: F, schema: Schema<F>) {
     INITIAL_IS_SUBMITTED_STATE
   );
 
-  const touched = createReducer<F, Touched<F>>(
+  const touched = createReducer<F, Touched>(
     {
-      [FormAction.FORM_TOUCHED]: (
-        _: Touched<F>,
-        { payload }: FormTouchedAction<F>
-      ) => payload,
+      [FormAction.FORM_TOUCHED]: (_: Touched, { payload }: FormTouchedAction) =>
+        payload,
       [FormAction.FORM_CLEARED]: () => INITIAL_TOUCHED_STATE,
     },
     INITIAL_TOUCHED_STATE
   );
 
-  const errors = createReducer<F, Errors<F>>(
+  const errors = createReducer<F, Errors>(
     {
-      [FormAction.FORM_ERRORED]: (
-        _: Errors<F>,
-        { payload }: FormErroredAction<F>
-      ) => payload,
+      [FormAction.FORM_ERRORED]: (_: Errors, { payload }: FormErroredAction) =>
+        payload,
       [FormAction.FORM_ERRORS_RESET]: () => INITIAL_ERROR_STATE,
       [FormAction.FORM_CLEARED]: () => INITIAL_ERROR_STATE,
     },

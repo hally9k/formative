@@ -1,43 +1,29 @@
-import { createSelector } from 'reselect';
+import { useMemo } from 'react';
 import get from 'lodash/get';
+import { FormState } from './reducer';
 
-export function createSelectors<S>(state: S) {
-  const getFormState = () => get(state, `form`, null);
+export function createSelectors<F>(state: FormState<F>) {
+  const getForm = useMemo(() => get(state, `form`, null), [state.form]);
 
-  const getForm = createSelector(
-    [getFormState],
-    form => form
-  );
+  const getIsValid = useMemo(() => () => get(state, `isValid`, null), [
+    state.isValid,
+  ]);
 
-  const getIsValidState = () => get(state, `isValid`, null);
-  const getIsValid = createSelector(
-    [getIsValidState],
-    isValid => isValid
-  );
+  const getValidation = useMemo(() => get(state, `validation`, null), [
+    state.validation,
+  ]);
 
-  const getValidationState = () => get(state, `validation`, null);
-  const getValidation = createSelector(
-    [getValidationState],
-    validation => validation
-  );
+  const getTouched = useMemo(() => get(state, `touched`, null), [
+    state.validation,
+  ]);
 
-  const getTouchedState = () => get(state, `touched`, null);
-  const getTouched = createSelector(
-    [getTouchedState],
-    touched => touched
-  );
+  const getErrors = useMemo(() => get(state, `errors`, null), [
+    state.validation,
+  ]);
 
-  const getErrorState = () => get(state, `errors`, null);
-  const getErrors = createSelector(
-    [getErrorState],
-    errors => errors
-  );
-
-  const getIsSubmittedState = () => get(state, `isSubmitted`, null);
-  const getIsSubmitted = createSelector(
-    [getIsSubmittedState],
-    isSubmitted => isSubmitted
-  );
+  const getIsSubmitted = useMemo(() => get(state, `isSubmitted`, null), [
+    state.isSubmitted,
+  ]);
 
   return {
     getForm,

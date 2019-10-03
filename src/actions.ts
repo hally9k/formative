@@ -18,75 +18,74 @@ export enum FormAction {
   FORM_SUBMITTED = 'FORM_SUBMITTED',
 }
 
-export type Touched<F> = {
-  [P in keyof F]: boolean;
+export type Touched = {
+  // ! FIXME This should be indexed with keyof F
+  [key: string]: boolean;
 };
 
-export type Validation<F> = {
-  [P in keyof F]: string | null;
-} & { message: string | null };
+export type Validation = {
+  // ! FIXME This should be indexed with keyof F
+  [key: string]: string | null;
+};
 
-export type Errors<F> = Validation<F>;
+export type Errors = Validation;
 
-interface FieldValidationResetPayload<F> {
-  fieldName: keyof F;
+export interface FieldValidationResetPayload {
+  fieldName: string;
 }
 
 export type FormUpdatedAction<F> = Action<FormAction.FORM_UPDATED, F>;
 export type FormClearedAction = Action<FormAction.FORM_CLEARED>;
-export type FormTouchedAction<F> = Action<FormAction.FORM_TOUCHED, Touched<F>>;
-export type FormValidatedAction<F> = Action<
-  FormAction.FORM_VALIDATED,
-  Validation<F>
->;
+export type FormTouchedAction = Action<FormAction.FORM_TOUCHED, Touched>;
+export type FormValidatedAction<F> = Action<FormAction.FORM_VALIDATED, F>;
 export type FormValidationFailedAction = Action<
   FormAction.FORM_VALIDATION_FAILED
 >;
 export type FormValidationResetAction = Action<
   FormAction.FORM_VALIDATION_RESET
 >;
-export type FormFieldValidationResetAction<F> = Action<
+export type FormFieldValidationResetAction = Action<
   FormAction.FORM_FIELD_VALIDATION_RESET,
-  FieldValidationResetPayload<F>
+  FieldValidationResetPayload
 >;
-export type FormErroredAction<F> = Action<FormAction.FORM_ERRORED, Errors<F>>;
+export type FormErroredAction = Action<FormAction.FORM_ERRORED, Errors>;
 export type FormErrorsResetAction = Action<FormAction.FORM_ERRORS_RESET>;
-export type FormSubmittedAction = Action<FormAction.FORM_SUBMITTED>;
+export type FormSubmittedAction = Action<FormAction.FORM_SUBMITTED, boolean>;
 
 export type ActionUnion<F> =
   | FormUpdatedAction<F>
   | FormClearedAction
-  | FormTouchedAction<F>
+  | FormTouchedAction
   | FormValidatedAction<F>
   | FormValidationFailedAction
   | FormValidationResetAction
-  | FormFieldValidationResetAction<F>
-  | FormErroredAction<F>
+  | FormFieldValidationResetAction
+  | FormErroredAction
   | FormErrorsResetAction
   | FormSubmittedAction;
 
 type FormUpdatedDispatcher<F> = (payload: Partial<F>) => void;
 type FormClearedDispatcher = () => void;
-type FormTouchedDispatcher<F> = (payload: Touched<F>) => void;
-type FormValidatedDispatcher<F> = (payload: Validation<F>) => void;
+type FormTouchedDispatcher = (payload: Touched) => void;
+type FormValidatedDispatcher<F> = (payload: F) => void;
 type FormValidationFailedDispatcher = () => void;
 type FormValidationResetDispatcher = () => void;
-type FormFieldValidationResetDispatcher<F> = (
-  payload: FieldValidationResetPayload<F>
+type FormFieldValidationResetDispatcher = (
+  payload: FieldValidationResetPayload
 ) => void;
-type FormErroredDispatcher<F> = (payload: Errors<F>) => void;
+type FormErroredDispatcher = (payload: Errors) => void;
 type FormErrorsResetDispatcher = () => void;
-type FormSubmittedDispatcher = () => void;
+type FormSubmittedDispatcher = (payload: boolean) => void;
 
 export interface Dispatchers<F> {
   formUpdated: FormUpdatedDispatcher<F>;
   formCleared: FormClearedDispatcher;
-  formTouched: FormTouchedDispatcher<F>;
+  formTouched: FormTouchedDispatcher;
   formValidated: FormValidatedDispatcher<F>;
   formValidationFailed: FormValidationFailedDispatcher;
   formValidationReset: FormValidationResetDispatcher;
-  formFieldValidationReset: FormFieldValidationResetDispatcher<F>;
-  formErrored: FormErroredDispatcher<F>;
+  formFieldValidationReset: FormFieldValidationResetDispatcher;
+  formErrored: FormErroredDispatcher;
   formErrorsReset: FormErrorsResetDispatcher;
   formSubmitted: FormSubmittedDispatcher;
 }
@@ -111,10 +110,10 @@ export function createFormClearedDispatcher(
     });
 }
 
-export function createFormTouchedDispatcher<F>(
-  dispatch: Dispatch<FormTouchedAction<F>>
+export function createFormTouchedDispatcher(
+  dispatch: Dispatch<FormTouchedAction>
 ) {
-  return (payload: Touched<F>) =>
+  return (payload: Touched) =>
     dispatch({
       type: FormAction.FORM_TOUCHED,
       payload,
@@ -124,7 +123,7 @@ export function createFormTouchedDispatcher<F>(
 export function createFormValidatedDispatcher<F>(
   dispatch: Dispatch<FormValidatedAction<F>>
 ) {
-  return (payload: Validation<F>) =>
+  return (payload: F) =>
     dispatch({
       type: FormAction.FORM_VALIDATED,
       payload,
@@ -151,20 +150,20 @@ export function createFormValidationResetDispatcher(
     });
 }
 
-export function createFormFieldValidationResetDispatcher<F>(
-  dispatch: Dispatch<FormFieldValidationResetAction<F>>
+export function createFormFieldValidationResetDispatcher(
+  dispatch: Dispatch<FormFieldValidationResetAction>
 ) {
-  return (payload: FieldValidationResetPayload<F>) =>
+  return (payload: FieldValidationResetPayload) =>
     dispatch({
       type: FormAction.FORM_FIELD_VALIDATION_RESET,
       payload,
     });
 }
 
-export function createFormErroredDispatcher<F>(
-  dispatch: Dispatch<FormErroredAction<F>>
+export function createFormErroredDispatcher(
+  dispatch: Dispatch<FormErroredAction>
 ) {
-  return (payload: Errors<F>) =>
+  return (payload: Errors) =>
     dispatch({
       type: FormAction.FORM_ERRORED,
       payload,
@@ -184,10 +183,10 @@ export function createFormErrorsResetDispatcher(
 export function createFormSubmittedDispatcher(
   dispatch: Dispatch<FormSubmittedAction>
 ) {
-  return () =>
+  return (payload: boolean) =>
     dispatch({
       type: FormAction.FORM_SUBMITTED,
-      payload: null,
+      payload,
     });
 }
 
@@ -201,7 +200,7 @@ export function createDispatchers<F>(
     formValidated: createFormValidatedDispatcher<F>(dispatch),
     formValidationFailed: createFormValidationFailedDispatcher(dispatch),
     formValidationReset: createFormValidationResetDispatcher(dispatch),
-    formFieldValidationReset: createFormFieldValidationResetDispatcher<F>(
+    formFieldValidationReset: createFormFieldValidationResetDispatcher(
       dispatch
     ),
     formErrored: createFormErroredDispatcher(dispatch),
