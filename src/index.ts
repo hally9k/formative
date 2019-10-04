@@ -1,11 +1,10 @@
-import { useEffect, useState, useReducer } from 'react';
+import { useReducer } from 'react';
 import { Schema } from 'yup';
 import zipObject from 'lodash/zipObject';
 
-import { createFormReducer, FormState } from './reducer';
+import { createFormReducer } from './reducer';
 import { createDispatchers, Errors, Touched, Validation } from './actions';
-import { createFormHooks, FormHooks } from './hooks';
-import { createSelectors } from './selectors';
+import { createFormHooks } from './hooks';
 
 function createInitialState<F>(form: F) {
   const formKeys = Object.keys(form);
@@ -21,15 +20,6 @@ function createInitialState<F>(form: F) {
 }
 
 export function useForm<F>(form: F, schema: Schema<F>) {
-  // const [hooks, updateHooks] = useState<FormHooks<F> | null>(null);
-  // const [initialState, updateInitialState] = useState<FormState<F>>(
-  //   createInitialState<F>(form)
-  // );
-
-  // useEffect(() => {
-  //   updateInitialState(createInitialState(form));
-  // }, [form]);
-
   const initialState = createInitialState<F>(form);
 
   const [state, dispatch] = useReducer(
@@ -38,10 +28,6 @@ export function useForm<F>(form: F, schema: Schema<F>) {
   );
 
   const dispatchers = createDispatchers<F>(dispatch);
-
-  // useEffect(() => {
-  //   updateHooks(createFormHooks(state, dispatchers, schema));
-  // }, [state]);
 
   return createFormHooks(state, dispatchers, schema);
 }

@@ -191,7 +191,7 @@ export function createFormSubmittedDispatcher(
 }
 
 export function createDispatchers<F>(
-  dispatch: Dispatch<Action<any, any>> // Dispatch<Action<any, any>>
+  dispatch: Dispatch<Action<any, any>>
 ): Dispatchers<F> {
   return {
     formUpdated: createFormUpdatedDispatcher<F>(dispatch),

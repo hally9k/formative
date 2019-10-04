@@ -6,7 +6,7 @@ import { useForm } from '../src';
 
 enum FieldKey {
   EMAIL = 'email',
-  PASSWORD = 'password'
+  PASSWORD = 'password',
 }
 
 interface Form {
@@ -29,41 +29,34 @@ const schema = yup.object().shape({
 
 const App = () => {
   const {
-    // useClearForm,
-    // useErrors,
-    // useFieldError,
-    // useFormState,
-    // useControlHandlerProps,
-    // useInputHandlerProps,
-    inputHandlerProps
+    validation,
+    errors,
+    inputHandlerProps,
     useHandleSubmit,
-    // useIsErrored,
     isErrored,
-    // useIsValid,
-    // useResetErrors,
-    // useSetFieldValue,
-    // useValidation,
-    // useOnChange,
-    // useOnClick,
-    // useOnBlur,
-    // useOnFocus,
-    // useTouched,
-    // useIsSubmitted,
-    // useUpdateIsSubmitted,
-    // useUpdateValidation,
-    // useUpdateTouched,
   } = useForm<Form>(form, schema);
 
-  const handleSubmit = useHandleSubmit((event: React.SyntheticEvent<HTMLButtonElement>) => {
-
-  })
+  const handleSubmit = useHandleSubmit(() => {
+    alert('submitted');
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      style={{ display: 'flex', flexDirection: 'column', width: 300 }}
+      onSubmit={handleSubmit}
+    >
       <input name={FieldKey.EMAIL} {...inputHandlerProps} />
-  { isErrored(FieldKey.EMAIL) && <p style={{ color: 'red' }}>{errors[FieldKey.EMAIL]}</p> }
-      <input name={FieldKey.PASSWORD} {...useInputHandlerProps} />
-      <p style={{ color: 'red' }}></p>
+      {isErrored(FieldKey.EMAIL) && (
+        <p style={{ color: 'red' }}>
+          {validation[FieldKey.EMAIL] || errors[FieldKey.EMAIL]}
+        </p>
+      )}
+      <input type="password" name={FieldKey.PASSWORD} {...inputHandlerProps} />
+      {isErrored(FieldKey.PASSWORD) && (
+        <p style={{ color: 'red' }}>
+          {validation[FieldKey.PASSWORD] || errors[FieldKey.PASSWORD]}
+        </p>
+      )}
       <button type="submit">Submit</button>
     </form>
   );
