@@ -1,6 +1,6 @@
 {
   "name": "formative",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "main": "dist/index.js",
   "module": "dist/formative.esm.js",
   "typings": "dist/index.d.ts",
