@@ -2,7 +2,7 @@ import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as yup from 'yup';
-import { useForm } from '../src';
+import { useForm } from 'formative';
 
 enum FieldKey {
   EMAIL = 'email',
