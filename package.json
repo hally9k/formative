@@ -1,10 +1,14 @@
 {
   "name": "formative",
-  "version": "2.0.0",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "module": "dist/formative.esm.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
+  "repository": "github:hally9k/formative",
+  "contributors": [
+    "Hal Smith Stevens <hally9k@gmail.com>"
+  ],
   "files": [
     "dist"
   ],
