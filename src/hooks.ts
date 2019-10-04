@@ -11,7 +11,7 @@ import { Schema } from 'yup';
 
 export interface FormHooks<F> {
   form: F;
-  errors: Error;
+  errors: Errors;
   validation: Validation;
   touched: Touched;
   isValid: boolean;
