@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "module": "dist/formative.esm.js",
   "typings": "dist/index.d.ts",
+  "license": "MIT",
   "files": [
     "dist"
   ],
@@ -28,20 +29,19 @@
     "trailingComma": "es5"
   },
   "dependencies": {
-    "@types/reselect": "^2.2.0",
-    "@types/yup": "^0.26.24",
     "lodash": "^4.17.15",
     "redux": "^4.0.4",
-    "tsdx": "^0.9.3",
-    "tslib": "^1.10.0",
     "typescript": "^3.6.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.141",
     "@types/react": "^16.9.3",
     "@types/react-dom": "^16.9.1",
+    "@types/yup": "^0.26.24",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
+    "tsdx": "^0.9.3",
+    "tslib": "^1.10.0",
     "yup": "^0.27.0"
   }
 }
