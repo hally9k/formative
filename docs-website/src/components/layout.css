@@ -650,6 +650,8 @@ pre tt:after {
 
 #gatsby-focus-wrapper > main {
   grid-area: main;
+
+  padding: 2rem 2rem;
 }
 
 #gatsby-focus-wrapper > footer {

@@ -1,4 +1,4 @@
-import { Link } from "gatsby"
+import { Link, graphql, useStaticQuery } from "gatsby"
 import React from "react"
 import { css } from "@emotion/core"
 
@@ -17,19 +17,35 @@ const navigationLinkCss = css`
     color: gray;
   }
 `
-export const LeftAside = () => (
-  <aside css={leftAsideCss}>
-    <Link css={navigationLinkCss} href="/intro">
-      Introduction
-    </Link>
-    <Link css={navigationLinkCss} href="/quick-start">
-      Quick Start
-    </Link>
-    <Link css={navigationLinkCss} href="/examples">
-      Examples
-    </Link>
-    <Link css={navigationLinkCss} href="/api">
-      API
-    </Link>
-  </aside>
-)
+export const LeftAside = () => {
+  const {
+    allMarkdownRemark: { edges: sections },
+  } = useStaticQuery(graphql`
+    query IndexQuery {
+      allMarkdownRemark {
+        edges {
+          node {
+            excerpt(pruneLength: 250)
+            id
+            frontmatter {
+              title
+              path
+            }
+          }
+        }
+      }
+    }
+  `)
+
+  console.log(sections)
+
+  return (
+    <aside css={leftAsideCss}>
+      {sections.map(({ node: section }) => (
+        <Link css={navigationLinkCss} to={section.frontmatter.path}>
+          {section.frontmatter.title}
+        </Link>
+      ))}
+    </aside>
+  )
+}

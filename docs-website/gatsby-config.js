@@ -5,6 +5,7 @@ module.exports = {
     author: `@hally9k`,
   },
   plugins: [
+    "gatsby-plugin-catch-links",
     `gatsby-plugin-emotion`,
     `gatsby-plugin-react-helmet`,
     {
@@ -26,6 +27,30 @@ module.exports = {
         theme_color: `#663399`,
         display: `minimal-ui`,
         icon: `src/images/formative-f.png`, // This path is relative to the root of the site.
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        path: `${__dirname}/src/pages`,
+        name: "pages",
+      },
+    },
+    {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-embed-snippet`,
+            options: {},
+          },
+          {
+            resolve: `gatsby-remark-prismjs`,
+            options: {
+              directory: `${__dirname}/snippets/`,
+            },
+          },
+        ],
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
