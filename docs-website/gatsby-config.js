@@ -5,7 +5,7 @@ module.exports = {
     author: `@hally9k`,
   },
   plugins: [
-    "gatsby-plugin-catch-links",
+    `gatsby-plugin-catch-links`,
     `gatsby-plugin-emotion`,
     `gatsby-plugin-react-helmet`,
     {
@@ -32,14 +32,30 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/src/pages`,
         name: "pages",
+        path: `${__dirname}/src/pages`,
       },
     },
     {
       resolve: `gatsby-transformer-remark`,
       options: {
-        plugins: [`gatsby-remark-embed-snippet`, `gatsby-remark-prismjs`],
+        plugins: [
+          {
+            resolve: `gatsby-remark-embed-snippet`,
+            options: {
+              directory: `${__dirname}/src/snippets`,
+            },
+          },
+          `gatsby-remark-prismjs`,
+        ],
+      },
+    },
+    {
+      resolve: `gatsby-plugin-typescript`,
+      options: {
+        isTSX: true, // defaults to false
+        jsxPragma: `jsx`, // defaults to "React"
+        allExtensions: true, // defaults to false
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality

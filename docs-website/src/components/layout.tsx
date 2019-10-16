@@ -5,9 +5,9 @@ import { Global } from "@emotion/core"
 import { Header } from "./header"
 import { LeftAside } from "./left-aside"
 
-import { globalCss } from "../style/global.css.js"
-import { colorCss } from "../style/color.css.js"
-import { markdownCss } from "../style/markdown.css.js"
+import { globalCss } from "../style/global-css"
+import { colorCss } from "../style/color-css"
+import { markdownCss } from "../style/markdown-css"
 
 export const Layout = ({ children, noLeftAside = false }) => {
   const data = useStaticQuery(graphql`
@@ -21,7 +21,7 @@ export const Layout = ({ children, noLeftAside = false }) => {
   `)
 
   return (
-    <>
+    <React.Fragment>
       <Global styles={globalCss} />
       <Global styles={colorCss} />
       <Global styles={markdownCss} />
@@ -29,7 +29,7 @@ export const Layout = ({ children, noLeftAside = false }) => {
       {!noLeftAside && <LeftAside />}
       <main>{children}</main>
       <footer></footer>
-    </>
+    </React.Fragment>
   )
 }
 
