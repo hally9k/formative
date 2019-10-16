@@ -654,6 +654,9 @@ export const globalCss = css`
   #gatsby-focus-wrapper > main {
     grid-area: main;
 
+    max-width: 800px;
+    min-width: 300px;
+
     padding: 2rem 2rem;
   }
 
