@@ -39,18 +39,7 @@ module.exports = {
     {
       resolve: `gatsby-transformer-remark`,
       options: {
-        plugins: [
-          {
-            resolve: `gatsby-remark-embed-snippet`,
-            options: {},
-          },
-          {
-            resolve: `gatsby-remark-prismjs`,
-            options: {
-              directory: `${__dirname}/snippets/`,
-            },
-          },
-        ],
+        plugins: [`gatsby-remark-embed-snippet`, `gatsby-remark-prismjs`],
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality

@@ -8,11 +8,13 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
-
+import { Global } from "@emotion/core"
 import { Header } from "./header"
 import { LeftAside } from "./left-aside"
 
-import "./layout.css"
+import { globalCss } from "../style/global.css.js"
+import { markdownCss } from "../style/markdown.css.js"
+import "prismjs/themes/prism.css"
 
 export const Layout = ({ children, noLeftAside = false }) => {
   const data = useStaticQuery(graphql`
@@ -27,6 +29,8 @@ export const Layout = ({ children, noLeftAside = false }) => {
 
   return (
     <>
+      <Global styles={globalCss} />
+      <Global styles={markdownCss} />
       <Header siteTitle={data.site.siteMetadata.title} />
       {!noLeftAside && <LeftAside />}
       <main>{children}</main>

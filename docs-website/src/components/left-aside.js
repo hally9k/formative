@@ -37,8 +37,6 @@ export const LeftAside = () => {
     }
   `)
 
-  console.log(sections)
-
   return (
     <aside css={leftAsideCss}>
       {sections.map(({ node: section }) => (

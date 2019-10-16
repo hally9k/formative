@@ -28,8 +28,6 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     return
   }
 
-  console.log(result)
-
   result.data.allMarkdownRemark.edges.forEach(({ node }) => {
     createPage({
       path: node.frontmatter.path,
